@@ -8,7 +8,7 @@ class Deck:
         self.cards = []
         for suit in [0, 1, 2, 3]:
             for value in range(0, 13):
-                self.cards.append(Card(value, suit))
+                self.cards.append(Card().from_int(value, suit))
 
     def shuffle(self):
         random.shuffle(self.cards)

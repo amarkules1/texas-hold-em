@@ -24,13 +24,10 @@ def sklansky_rank(card1, card2):
     
 
 def is_rank_1(higher_card, lower_card):
-    if higher_card.rank == lower_card.rank and higher_card.rank >= 8:
+    if higher_card.rank == lower_card.rank and higher_card.rank >= 9:
         return True
     # ace king suited
     if (higher_card.suit == lower_card.suit) and (higher_card.rank == 12 and lower_card.rank == 11):
-        return True
-    # tens 
-    if higher_card.rank == 10 and lower_card.rank == 10:
         return True
     return False
     
@@ -42,10 +39,13 @@ def is_rank_2_or_better(higher_card, lower_card):
     if higher_card.rank == 12 and lower_card.rank == 11:
         return True
     # ace queen/jack suited
-    if (higher_card.suit == lower_card.suit) and (higher_card.rank == 12 and lower_card.rank >= 10):
+    if (higher_card.suit == lower_card.suit) and (higher_card.rank == 12 and lower_card.rank >= 9):
         return True
     # king queen suited
     if (higher_card.suit == lower_card.suit) and (higher_card.rank == 11 and lower_card.rank == 10):
+        return True
+    # tens
+    if higher_card.rank == 8 and lower_card.rank == 8:
         return True
     return False
 
@@ -54,16 +54,16 @@ def is_rank_3_or_better(higher_card, lower_card):
     if is_rank_2_or_better(higher_card, lower_card):
         return True
     # ace queen offsuit
-    if (higher_card.rank == 12 and lower_card.rank == 10):
+    if higher_card.rank == 12 and lower_card.rank == 10:
         return True
     # jack king/queen suited
-    if (higher_card.suit == lower_card.suit) and (higher_card.rank >=10 and lower_card.rank == 9):
+    if (higher_card.suit == lower_card.suit) and (higher_card.rank >= 10 and lower_card.rank == 9):
         return True
-    # ace ten suited
-    if (higher_card.suit == lower_card.suit) and (higher_card.rank == 12 and lower_card.rank == 8):
+    # ace/jack ten suited
+    if (higher_card.suit == lower_card.suit) and (higher_card.rank in [12, 9] and lower_card.rank == 8):
         return True
     # nines
-    if higher_card.rank == 9 and lower_card.rank == 9:
+    if higher_card.rank == 7 and lower_card.rank == 7:
         return True
 
     return False
@@ -82,7 +82,7 @@ def is_rank_4_or_better(higher_card, lower_card):
     if (higher_card.suit == lower_card.suit) and (higher_card.rank >= 10 and lower_card.rank == 8):
         return True
     # nine ten/jack suited
-    if (higher_card.suit == lower_card.suit) and (higher_card.rank >= 8 and lower_card.rank >= 7):
+    if (higher_card.suit == lower_card.suit) and (higher_card.rank in [9, 8] and lower_card.rank >= 7):
         return True
     # nine eight suited
     if (higher_card.suit == lower_card.suit) and (higher_card.rank == 7 and lower_card.rank == 6):
@@ -97,8 +97,8 @@ def is_rank_4_or_better(higher_card, lower_card):
 def is_rank_5_or_better(higher_card, lower_card):
     if is_rank_4_or_better(higher_card, lower_card):
         return True
-     #jack king/queen offsuit
-    if higher_card.rank >= 10 and lower_card.rank == 8:
+    # jack king/queen offsuit
+    if higher_card.rank >= 10 and lower_card.rank == 9:
         return True
     # jack ten offsuit
     if higher_card.rank == 9 and lower_card.rank == 8:
@@ -113,13 +113,13 @@ def is_rank_5_or_better(higher_card, lower_card):
     if higher_card.suit == lower_card.suit and higher_card.rank == 8 and lower_card.rank == 6:
         return True
     # seven eight/nine suited
-    if higher_card.suit == lower_card.suit and higher_card.rank >= 6 and lower_card.rank == 5:
+    if higher_card.suit == lower_card.suit and higher_card.rank in [6, 7] and lower_card.rank == 5:
         return True
     # sevens
     if higher_card.rank == 5 and lower_card.rank == 5:
         return True
     # seven six suited
-    if higher_card.suit == lower_card.suit and higher_card.rank == 4 and lower_card.rank == 3:
+    if higher_card.suit == lower_card.suit and higher_card.rank == 5 and lower_card.rank == 4:
         return True
 
     return False

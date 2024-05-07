@@ -5,17 +5,23 @@ class Card:
     rank: int = 0
     suit: int = 0
 
-    def __init__(self, rank: int, suit: int):
+    def __init__ (self):
+        self.rank = 0
+        self.suit = 0
+
+    def from_int(self, rank: int, suit: int):
         """
         :param rank: 0 indexed ("2" = 0, "A" = 12) card rank
         :param suit: from 0-3: "Hearts", "Diamonds", "Clubs", "Spades"
         """
         self.rank = rank
         self.suit = suit
+        return self
 
-    def __int__(self, rank: str, suit: str):
+    def from_str(self, rank: str, suit: str):
         self.rank = self.ranks.index(rank)
         self.suit = self.suits.index(suit)
+        return self
 
     def name(self):
         return f"{self.ranks[self.rank]} of {self.suits[self.suit]}"
