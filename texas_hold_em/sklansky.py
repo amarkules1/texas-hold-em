@@ -1,24 +1,38 @@
 from texas_hold_em.deck import Deck
 
 
+def sklansky_playable_position(position: int):
+    if position < 5:
+        return "Early, Middle, Late"
+    if position == 5:
+        return "Early (loose/passive), Middle, Late"
+    if position == 6:
+        return "Middle (loose/passive), Late"
+    if position == 7:
+        return "Late if no bettors"
+    if position == 8:
+        return "Call if late and no bettors"
+    return "Not playable"
+
+
 def sklansky_rank(card1, card2):
     higher_card = card1 if card1.rank > card2.rank else card2
     lower_card = card1 if card1.rank < card2.rank else card2
     if is_rank_1(higher_card, lower_card):
         return 1
-    if is_rank_2_or_better(higher_card, lower_card):
+    if is_rank_2(higher_card, lower_card):
         return 2
-    if is_rank_3_or_better(higher_card, lower_card):
+    if is_rank_3(higher_card, lower_card):
         return 3
-    if is_rank_4_or_better(higher_card, lower_card):
+    if is_rank_4(higher_card, lower_card):
         return 4
-    if is_rank_5_or_better(higher_card, lower_card):
+    if is_rank_5(higher_card, lower_card):
         return 5
-    if is_rank_6_or_better(higher_card, lower_card):
+    if is_rank_6(higher_card, lower_card):
         return 6
-    if is_rank_7_or_better(higher_card, lower_card):
+    if is_rank_7(higher_card, lower_card):
         return 7
-    if is_rank_8_or_better(higher_card, lower_card):
+    if is_rank_8(higher_card, lower_card):
         return 8
     return 9
     
@@ -32,9 +46,7 @@ def is_rank_1(higher_card, lower_card):
     return False
     
 
-def is_rank_2_or_better(higher_card, lower_card):
-    if is_rank_1(higher_card, lower_card):
-        return True
+def is_rank_2(higher_card, lower_card):
     # ace king offsuit
     if higher_card.rank == 12 and lower_card.rank == 11:
         return True
@@ -50,9 +62,7 @@ def is_rank_2_or_better(higher_card, lower_card):
     return False
 
 
-def is_rank_3_or_better(higher_card, lower_card):
-    if is_rank_2_or_better(higher_card, lower_card):
-        return True
+def is_rank_3(higher_card, lower_card):
     # ace queen offsuit
     if higher_card.rank == 12 and lower_card.rank == 10:
         return True
@@ -69,9 +79,7 @@ def is_rank_3_or_better(higher_card, lower_card):
     return False
 
 
-def is_rank_4_or_better(higher_card, lower_card):
-    if is_rank_3_or_better(higher_card, lower_card):
-        return True
+def is_rank_4(higher_card, lower_card):
     # ace jack offsuit
     if higher_card.rank == 12 and lower_card.rank == 9:
         return True
@@ -94,9 +102,7 @@ def is_rank_4_or_better(higher_card, lower_card):
     return False
 
 
-def is_rank_5_or_better(higher_card, lower_card):
-    if is_rank_4_or_better(higher_card, lower_card):
-        return True
+def is_rank_5(higher_card, lower_card):
     # jack king/queen offsuit
     if higher_card.rank >= 10 and lower_card.rank == 9:
         return True
@@ -125,9 +131,7 @@ def is_rank_5_or_better(higher_card, lower_card):
     return False
 
 
-def is_rank_6_or_better(higher_card, lower_card):
-    if is_rank_5_or_better(higher_card, lower_card):
-        return True
+def is_rank_6(higher_card, lower_card):
     # ace/king/queen ten offsuit
     if higher_card.rank >= 10 and lower_card.rank == 8:
         return True
@@ -156,9 +160,7 @@ def is_rank_6_or_better(higher_card, lower_card):
     return False
 
 
-def is_rank_7_or_better(higher_card, lower_card):
-    if is_rank_6_or_better(higher_card, lower_card):
-        return True
+def is_rank_7(higher_card, lower_card):
     # king any suited
     if higher_card.suit == lower_card.suit and higher_card.rank == 11:
         return True
@@ -187,9 +189,7 @@ def is_rank_7_or_better(higher_card, lower_card):
     return False
 
 
-def is_rank_8_or_better(higher_card, lower_card):
-    if is_rank_7_or_better(higher_card, lower_card):
-        return True
+def is_rank_8(higher_card, lower_card):
     # ace/king/queen nine offsuit
     if higher_card.rank >= 10 and lower_card.rank == 7:
         return True
