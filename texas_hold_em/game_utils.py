@@ -1,13 +1,7 @@
 from texas_hold_em.card import Card
 
 
-def get_best_5(hand, community_cards):
-    """
-    :param hand: list of 2 cards
-    :param community_cards: list of 5 cards
-    :return: list of 5 cards
-    """
-    pass
+
 
 
 def get_card_counts(hand, community_cards):

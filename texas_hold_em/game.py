@@ -1,5 +1,5 @@
 from texas_hold_em.deck import Deck
-from texas_hold_em.hand import Hand
+from texas_hold_em.handoftwo import HandOfTwo
 
 
 class Game:
@@ -10,7 +10,7 @@ class Game:
     def __init__(self, num_players):
         self.deck = Deck()
         self.deck.shuffle()
-        self.hands = [Hand() for _ in range(num_players)]
+        self.hands = [HandOfTwo() for _ in range(num_players)]
 
     def deal(self):
         # two loops to simulate real dealing
