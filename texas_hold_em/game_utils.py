@@ -1,9 +1,6 @@
 from texas_hold_em.card import Card
 
 
-
-
-
 def get_card_counts(hand, community_cards):
     rank_counts = [0] * 13
     for card in hand + community_cards:
@@ -19,28 +16,29 @@ def get_suite_counts(hand, community_cards):
 
 
 def find_royal_flush(hand, community_cards):
-    card_counts = get_card_counts(hand, community_cards)
-    if card_counts[8] == 1 and card_counts[9] == 1 and card_counts[10] == 1 and card_counts[11] == 1 and card_counts[12] == 1:
-        suite_counts = get_suite_counts(hand, community_cards)
-        for suite in suite_counts:
-            if suite >= 5:
-                # royal flush found in current suite, return that hand of 5 cards
-                return [Card().from_int(12, suite), Card().from_int(11, suite),
-                        Card().from_int(10, suite), Card().from_int(9, suite), Card().from_int(8, suite)]
+    suite_counts = get_suite_counts(hand, community_cards)
+    for i in range(4):
+        if suite_counts[i] >= 5:
+            suite_ranks = [card.rank for card in hand + community_cards if card.suit == i]
+            if 8 in suite_ranks and 9 in suite_ranks and 10 in suite_ranks and 11 in suite_ranks and 12 in suite_ranks:
+                # royal flush found
+                return [Card().from_ints(12, i), Card().from_ints(11, i), Card().from_ints(10, i),
+                        Card().from_ints(9, i), Card().from_ints(8, i)]
     return None
 
 
 def find_straight_flush(hand, community_cards):
-    card_counts = get_card_counts(hand, community_cards)
     suite_counts = get_suite_counts(hand, community_cards)
-    for suite in suite_counts:
-        if suite >= 5:
-            # check for straight flush
-            for i in range(0, 8):
-                if card_counts[i] >= 1 and card_counts[i + 1] >= 1 and card_counts[i + 2] >= 1 and card_counts[i + 3] >= 1 and card_counts[i + 4] >= 1:
+    for i in range(4):
+        if suite_counts[i] >= 5:
+            suite_ranks = [card.rank for card in hand + community_cards if card.suit == i]
+            suite_ranks.sort(reverse=True)
+            for j in range(0, 8):
+                if (j in suite_ranks and j + 1 in suite_ranks and j + 2 in suite_ranks and j + 3 in suite_ranks
+                        and j + 4 in suite_ranks):
                     # straight flush found
-                    return [Card().from_int(i + 4, suite), Card().from_int(i + 3, suite),
-                            Card().from_int(i + 2, suite), Card().from_int(i + 1, suite), Card().from_int(i, suite)]
+                    return [Card().from_ints(j + 4, i), Card().from_ints(j + 3, i), Card().from_ints(j + 2, i),
+                            Card().from_ints(j + 1, i), Card().from_ints(j, i)]
     return None
 
 
@@ -49,26 +47,32 @@ def find_four_of_a_kind(hand, community_cards):
     for i in range(0, 13):
         if card_counts[i] == 4:
             # four of a kind found
-            hand = [Card().from_int(i, 0), Card().from_int(i, 1), Card().from_int(i, 2), Card().from_int(i, 3)]
-            last_card_rank = -1
-            for j in range(13):
-                if j != i and card_counts[j] == 1:
-                    last_card_rank = j
-                    return hand + [Card().from_int(last_card_rank, 0)]
+            hand = [Card().from_ints(i, 0), Card().from_ints(i, 1), Card().from_ints(i, 2), Card().from_ints(i, 3)]
+            last_card = None
+            for card in hand + community_cards:
+                if card.rank != i and (last_card is None or card.rank > last_card.rank):
+                    last_card = card
+            return hand + [last_card]
 
     return None
 
 
 def find_full_house(hand, community_cards):
     card_counts = get_card_counts(hand, community_cards)
+    highest_three_of_a_kind = -1
+    highest_pair_not_highest_3 = -1
     for i in range(0, 13):
         if card_counts[i] == 3:
-            for j in range(0, 13):
-                if card_counts[j] == 2:
-                    # full house found
-                    hand = [Card().from_int(i, 0), Card().from_int(i, 1), Card().from_int(i, 2),
-                            Card().from_int(j, 0), Card().from_int(j, 1)]
-                    return hand
+            if highest_three_of_a_kind > highest_pair_not_highest_3:
+                highest_pair_not_highest_3 = highest_three_of_a_kind
+            highest_three_of_a_kind = i
+        elif card_counts[i] == 2:
+            highest_pair_not_highest_3 = i
+    if highest_three_of_a_kind != -1 and highest_pair_not_highest_3 != -1:
+        # full house found
+        hand = [card for card in hand + community_cards if card.rank == highest_three_of_a_kind]
+        hand += [card for card in hand + community_cards if card.rank == highest_pair_not_highest_3][:2]
+        return hand
     return None
 
 
@@ -88,70 +92,70 @@ def find_flush(hand, community_cards):
 
 def find_straight(hand, community_cards):
     card_counts = get_card_counts(hand, community_cards)
-    for i in range(0, 8):
-        if card_counts[i] >= 1 and card_counts[i + 1] >= 1 and card_counts[i + 2] >= 1 and card_counts[i + 3] >= 1 and card_counts[i + 4] >= 1:
+    # count high_to_low straights
+    for i in range(8, -1, -1):
+        if card_counts[i] > 0 and card_counts[i + 1] > 0 and card_counts[i + 2] > 0 and card_counts[i + 3] > 0 and \
+                card_counts[i + 4] > 0:
             # straight found
-            return [Card().from_int(i + 4, 0), Card().from_int(i + 3, 1),
-                    Card().from_int(i + 2, 2), Card().from_int(i + 1, 3), Card().from_int(i, 0)]
+            cards = [card for card in hand + community_cards if card.rank in [i, i + 1, i + 2, i + 3, i + 4]]
+            # remove dupes by rank
+            final_cards = []
+            for card in cards:
+                if card.rank not in [c.rank for c in final_cards]:
+                    final_cards.append(card)
+            cards.sort(key=lambda x: x.rank, reverse=True)
+            return cards[:5]
+
     return None
 
 
 def find_three_of_a_kind(hand, community_cards):
     card_counts = get_card_counts(hand, community_cards)
-    for i in range(0, 13):
+    for i in range(12, -1, -1):
         if card_counts[i] == 3:
             # three of a kind found
-            hand = [Card().from_int(i, 0), Card().from_int(i, 1), Card().from_int(i, 2)]
-            last_card_ranks = []
-            for j in range(13):
-                if j != i and card_counts[j] == 1:
-                    last_card_ranks.append(j)
-            last_card_ranks.sort(reverse=True)
-            return hand + [Card().from_int(last_card_ranks[0], 0), Card().from_int(last_card_ranks[1], 1)]
+            hand = [card for card in hand + community_cards if card.rank == i]
+            sorted_cards = sorted([card for card in hand + community_cards if card.rank != i], key=lambda x: x.rank,
+                                  reverse=True)
+            hand += [card for card in sorted_cards if card.rank != i][:2]
+            return hand
     return None
 
 
 def find_two_pair(hand, community_cards):
     card_counts = get_card_counts(hand, community_cards)
     pairs = []
-    for i in range(0, 13, -1):
+    for i in range(12, -1, -1):
         if card_counts[i] == 2:
             pairs.append(i)
-    if len(pairs) >= 2:
+        if len(pairs) == 2:
+            break
+    if len(pairs) == 2:
         # at least two pair found
-        hand = [Card().from_int(pairs[0], 0), Card().from_int(pairs[0], 1),
-                Card().from_int(pairs[1], 2), Card().from_int(pairs[1], 3)]
-        last_card_rank = -1
-        for j in range(13):
-            if j != pairs[0] and j != pairs[1] and card_counts[j] == 1:
-                last_card_rank = j
-        return hand + [Card().from_int(last_card_rank, 0)]
+        hand = [card for card in hand + community_cards if card.rank in pairs]
+        hand.sort(key=lambda x: x.rank, reverse=True)
+        last_card = None
+        for card in hand + community_cards:
+            if card.rank not in pairs and (not last_card or card.rank > last_card.rank):
+                last_card = card
+        return hand + [last_card]
     return None
 
 
 def find_single_pair(hand, community_cards):
     card_counts = get_card_counts(hand, community_cards)
-    for i in range(0, 13, -1):
+    for i in range(12, -1, -1):
         if card_counts[i] == 2:
             # pair found
-            hand = [Card().from_int(i, 0), Card().from_int(i, 1)]
-            last_card_ranks = []
-            for j in range(13):
-                if j != i and card_counts[j] == 1:
-                    last_card_ranks.append(j)
-            last_card_ranks.sort(reverse=True)
-            return hand + [Card().from_int(last_card_ranks[0], 0), Card().from_int(last_card_ranks[1], 1),
-                           Card().from_int(last_card_ranks[2], 2)]
+            hand = [card for card in hand + community_cards if card.rank == i]
+            sorted_cards = sorted([card for card in hand + community_cards if card.rank != i], key=lambda x: x.rank,
+                                  reverse=True)
+            hand += [card for card in sorted_cards if card.rank != i][:3]
+            return hand
     return None
 
 
 def find_high_card(hand, community_cards):
-    card_counts = get_card_counts(hand, community_cards)
-    last_card_ranks = []
-    for i in range(13):
-        if card_counts[i] == 1:
-            last_card_ranks.append(i)
-    last_card_ranks.sort(reverse=True)
-    return [Card().from_int(last_card_ranks[0], 0), Card().from_int(last_card_ranks[1], 1),
-            Card().from_int(last_card_ranks[2], 2), Card().from_int(last_card_ranks[3], 3),
-            Card().from_int(last_card_ranks[4], 0)]
+    hand = hand + community_cards
+    hand.sort(key=lambda x: x.rank, reverse=True)
+    return hand[:5]

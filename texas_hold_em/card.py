@@ -9,7 +9,7 @@ class Card:
         self.rank = 0
         self.suit = 0
 
-    def from_int(self, rank: int, suit: int):
+    def from_ints(self, rank: int, suit: int):
         """
         :param rank: 0 indexed ("2" = 0, "A" = 12) card rank
         :param suit: from 0-3: "Hearts", "Diamonds", "Clubs", "Spades"
@@ -34,3 +34,6 @@ class Card:
 
     def is_same_suit(self, card):
         return self.suit == card.suit
+
+    def __eq__(self, other):
+        return self.rank == other.rank and self.suit == other.suit
