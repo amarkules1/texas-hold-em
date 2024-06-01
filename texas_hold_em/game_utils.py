@@ -70,9 +70,9 @@ def find_full_house(hand, community_cards):
             highest_pair_not_highest_3 = i
     if highest_three_of_a_kind != -1 and highest_pair_not_highest_3 != -1:
         # full house found
-        hand = [card for card in hand + community_cards if card.rank == highest_three_of_a_kind]
-        hand += [card for card in hand + community_cards if card.rank == highest_pair_not_highest_3][:2]
-        return hand
+        hand_five = [card for card in hand + community_cards if card.rank == highest_three_of_a_kind]
+        hand_five += [card for card in hand + community_cards if card.rank == highest_pair_not_highest_3][:2]
+        return hand_five
     return None
 
 

@@ -16,10 +16,11 @@ HAND_FUNCTIONS = [
     find_high_card
 ]
 
+
 class HandOfTwo:
 
-    def __init__(self):
-        self.cards = []
+    def __init__(self, cards):
+        self.cards = cards
 
     def add_card(self, card):
         if len(self.cards) < 2:
@@ -36,16 +37,16 @@ class HandOfFive:
     hand = []
 
     def __init__(self, hand_cards, community_cards):
-        self.hand_cards = []
-        self.community_cards = []
-        self.hand_rank = self.determine_best(hand_cards, community_cards)
+        self.hand_cards = hand_cards
+        self.community_cards = community_cards
+        self.determine_best(hand_cards, community_cards)
 
     def determine_best(self, hand_cards, community_cards):
         for i in range(len(HAND_FUNCTIONS)):
             self.hand = HAND_FUNCTIONS[i](hand_cards, community_cards)
             if self.hand is not None:
-                self.hand_rank = 7 - i
-                return i
+                self.hand_rank = 9 - i
+                break
 
     def __gt__(self, other):
         if self.hand_rank > other.hand_rank:
@@ -53,18 +54,18 @@ class HandOfFive:
         elif self.hand_rank < other.hand_rank:
             return False
         for i in range(5):
-            if self.hand[i].rank > other.cards[i].rank:
+            if self.hand[i].rank > other.hand[i].rank:
                 return True
-            elif self.hand[i].rank < other.cards[i].rank:
+            elif self.hand[i].rank < other.hand[i].rank:
                 return False
         return False
 
     def __eq__(self, other):
         if self.hand_rank == other.hand_rank:
             for i in range(5):
-                if self.hand[i].rank != other.cards[i].rank:
+                if self.hand[i].rank != other.hand[i].rank:
                     return False
-                return True
+            return True
         return False
 
     def __lt__(self, other):

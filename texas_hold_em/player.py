@@ -1,4 +1,4 @@
-from texas_hold_em.hands import HandOfTwo
+from texas_hold_em.hands import HandOfTwo, HandOfFive
 
 
 class Player:
@@ -8,10 +8,11 @@ class Player:
     chips = 0
     round_bet = 0
     in_round = True
+    position = -1
 
-    def __init__(self):
-        self.hand_of_two = HandOfTwo()
-        self.hand_of_five = None
+    def __init__(self, position):
+        self.position = position
+        self.hand_of_two = HandOfTwo([])
         self.chips = 1000
         self.round_bet = 0
         self.in_round = True

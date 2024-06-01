@@ -13,9 +13,9 @@ class Game:
     def __init__(self, num_players):
         self.deck = Deck()
         self.deck.shuffle()
-        for _ in range(num_players):
-            player = Player()
-            player.hand_of_two = HandOfTwo()
+        for i in range(num_players):
+            player = Player(i)
+            player.hand_of_two = HandOfTwo([])
             self.players.append(player)
 
     def deal(self):
