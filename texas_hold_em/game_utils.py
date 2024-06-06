@@ -47,12 +47,12 @@ def find_four_of_a_kind(hand, community_cards):
     for i in range(0, 13):
         if card_counts[i] == 4:
             # four of a kind found
-            hand = [Card().from_ints(i, 0), Card().from_ints(i, 1), Card().from_ints(i, 2), Card().from_ints(i, 3)]
+            four = [Card().from_ints(i, 0), Card().from_ints(i, 1), Card().from_ints(i, 2), Card().from_ints(i, 3)]
             last_card = None
             for card in hand + community_cards:
                 if card.rank != i and (last_card is None or card.rank > last_card.rank):
                     last_card = card
-            return hand + [last_card]
+            return four + [last_card]
 
     return None
 
@@ -114,11 +114,11 @@ def find_three_of_a_kind(hand, community_cards):
     for i in range(12, -1, -1):
         if card_counts[i] == 3:
             # three of a kind found
-            hand = [card for card in hand + community_cards if card.rank == i]
+            three = [card for card in hand + community_cards if card.rank == i]
             sorted_cards = sorted([card for card in hand + community_cards if card.rank != i], key=lambda x: x.rank,
                                   reverse=True)
-            hand += [card for card in sorted_cards if card.rank != i][:2]
-            return hand
+            three += [card for card in sorted_cards if card.rank != i][:2]
+            return three
     return None
 
 
@@ -132,13 +132,11 @@ def find_two_pair(hand, community_cards):
             break
     if len(pairs) == 2:
         # at least two pair found
-        hand = [card for card in hand + community_cards if card.rank in pairs]
-        hand.sort(key=lambda x: x.rank, reverse=True)
-        last_card = None
-        for card in hand + community_cards:
-            if card.rank not in pairs and (not last_card or card.rank > last_card.rank):
-                last_card = card
-        return hand + [last_card]
+        hand_of_5 = [card for card in hand + community_cards if card.rank in pairs]
+        hand_of_5.sort(key=lambda x: x.rank, reverse=True)
+        remaining_cards = [card for card in hand + community_cards if card.rank not in pairs]
+        remaining_cards.sort(key=lambda x: x.rank, reverse=True)
+        return hand_of_5 + [remaining_cards[0]]
     return None
 
 
@@ -147,15 +145,15 @@ def find_single_pair(hand, community_cards):
     for i in range(12, -1, -1):
         if card_counts[i] == 2:
             # pair found
-            hand = [card for card in hand + community_cards if card.rank == i]
-            sorted_cards = sorted([card for card in hand + community_cards if card.rank != i], key=lambda x: x.rank,
-                                  reverse=True)
-            hand += [card for card in sorted_cards if card.rank != i][:3]
-            return hand
+            hand_of_5 = [card for card in hand + community_cards if card.rank == i]
+            remaining = [card for card in hand + community_cards if card.rank != i]
+            remaining.sort(key=lambda x: x.rank, reverse=True)
+            hand_of_5 += remaining[:3]
+            return hand_of_5
     return None
 
 
 def find_high_card(hand, community_cards):
-    hand = hand + community_cards
-    hand.sort(key=lambda x: x.rank, reverse=True)
-    return hand[:5]
+    sorted_cards = hand + community_cards
+    sorted_cards.sort(key=lambda x: x.rank, reverse=True)
+    return sorted_cards[:5]
