@@ -35,5 +35,9 @@ class Card:
     def is_same_suit(self, card):
         return self.suit == card.suit
 
+
     def __eq__(self, other):
         return self.rank == other.rank and self.suit == other.suit
+
+    def __str__(self):
+        return "{rank} of {suit}".format(rank=self.ranks[self.rank], suit=self.suits[self.suit])
