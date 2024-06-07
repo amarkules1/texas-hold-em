@@ -16,6 +16,9 @@ class Deck:
     def draw(self):
         return self.cards.pop()
 
+    def remove(self, card):
+        self.cards.remove(card)
+
     def __len__(self):
         return len(self.cards)
 

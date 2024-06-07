@@ -10,10 +10,10 @@ class Player:
     in_round = True
     position = -1
 
-    def __init__(self, position):
+    def __init__(self, position, chips=1000):
         self.position = position
         self.hand_of_two = HandOfTwo([])
-        self.chips = 1000
+        self.chips = chips
         self.round_bet = 0
         self.in_round = True
 
@@ -26,6 +26,18 @@ class Player:
 
     def fold(self):
         self.in_round = False
-        return self.round_bet
+        return 0
+
+    def decide(self, round_num, pot, all_day, big_blind, community_cards):
+        pass
 
 
+# Simple player calls big blind, then checks, folds to any bet past BB
+class SimplePlayer(Player):
+    def decide(self, round_num, pot, all_day, big_blind, community_cards):
+        to_call = all_day - self.round_bet
+        if round_num == 0 and all_day == big_blind and to_call > 0:
+            return "call", self.bet(to_call)
+        if to_call == 0:
+            return "check", 0
+        return "fold", self.fold()

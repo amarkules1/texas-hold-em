@@ -1,6 +1,6 @@
 from texas_hold_em.card import Card
 from texas_hold_em.hands import HandOfTwo
-from texas_hold_em.player import Player
+from texas_hold_em.player import Player, SimplePlayer
 from texas_hold_em.game import Game
 
 
@@ -151,3 +151,61 @@ def test_determine_round_winners_best_folded():
 
     assert len(winners) == 1
     assert winners[0].position == 4
+
+
+def test_2_player_simple_pre_flop():
+    game = Game(2)
+    game.players = [SimplePlayer(0), SimplePlayer(1)]
+    game.deal()
+    game.get_bets()
+
+    assert game.players[0].round_bet == 20
+    assert game.players[1].round_bet == 20
+    assert game.pot == 40
+    assert game.all_day == 20
+
+
+def test_2_player_simple_through_flop():
+    game = Game(2)
+    game.players = [SimplePlayer(0), SimplePlayer(1)]
+    game.deal()
+    game.get_bets()
+
+    assert game.players[0].round_bet == 20
+    assert game.players[1].round_bet == 20
+    assert game.pot == 40
+    assert game.all_day == 20
+    assert game.round == 0
+
+    game.flop()
+    game.get_bets()
+
+    assert game.players[0].round_bet == 20
+    assert game.players[1].round_bet == 20
+    assert game.pot == 40
+    assert game.all_day == 20
+    assert game.round == 1
+
+    game.turn()
+    game.get_bets()
+
+    assert game.players[0].round_bet == 20
+    assert game.players[1].round_bet == 20
+    assert game.pot == 40
+    assert game.all_day == 20
+    assert game.round == 2
+
+    game.river()
+    game.get_bets()
+
+    assert game.players[0].round_bet == 20
+    assert game.players[1].round_bet == 20
+    assert game.pot == 40
+    assert game.all_day == 20
+    assert game.round == 3
+
+    winners = game.determine_round_winners()
+    assert len(winners) > 0
+
+
+
