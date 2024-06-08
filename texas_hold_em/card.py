@@ -35,6 +35,8 @@ class Card:
     def is_same_suit(self, card):
         return self.suit == card.suit
 
+    def __gt__(self, other):
+        return self.rank > other.rank
 
     def __eq__(self, other):
         return self.rank == other.rank and self.suit == other.suit
