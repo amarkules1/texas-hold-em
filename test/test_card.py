@@ -1,4 +1,4 @@
-from texas_hold_em.card import Card
+from src.texas_hold_em_utils.card import Card
 
 
 def test_greater_than():

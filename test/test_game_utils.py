@@ -1,5 +1,5 @@
-from texas_hold_em.card import Card
-from texas_hold_em.game_utils import get_card_counts, find_royal_flush, find_straight_flush, find_four_of_a_kind, \
+from src.texas_hold_em_utils.card import Card
+from src.texas_hold_em_utils.game_utils import get_card_counts, find_royal_flush, find_straight_flush, find_four_of_a_kind, \
     find_full_house, find_flush, find_straight, find_three_of_a_kind, find_two_pair, find_single_pair, find_high_card
 
 

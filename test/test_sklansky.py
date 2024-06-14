@@ -1,5 +1,5 @@
-from texas_hold_em.card import Card
-from texas_hold_em.sklansky import sklansky_rank
+from src.texas_hold_em_utils.card import Card
+from src.texas_hold_em_utils.sklansky import sklansky_rank
 
 
 def test_sklansky_9_q_7_suited():

@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "texas_hold_em_utils"
+version = "0.0.1"
+authors = [
+  { name="Alex Markules", email="amarlar2354@gmail.com" },
+]
+description = "A package containing the logic for a Texas Hold 'Em game, along with some related utilities."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/amarkules1/texas-hold-em"
+Issues = "https://github.com/amarkules1/texas-hold-em/issues"

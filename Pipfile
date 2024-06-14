@@ -10,6 +10,9 @@ matplotlib = "*"
 python-dotenv = "*"
 sqlalchemy = "*"
 psycopg2 = "*"
+hatch = "*"
+build = "*"
+twine = "*"
 
 [dev-packages]
 pytest = "*"
