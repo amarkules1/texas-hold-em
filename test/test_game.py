@@ -1,7 +1,7 @@
-from src.texas_hold_em_utils.card import Card
-from src.texas_hold_em_utils.hands import HandOfTwo
-from src.texas_hold_em_utils.player import Player, SimplePlayer
-from src.texas_hold_em_utils.game import Game
+from texas_hold_em_utils.card import Card
+from texas_hold_em_utils.hands import HandOfTwo
+from texas_hold_em_utils.player import Player, SimplePlayer
+from texas_hold_em_utils.game import Game
 
 
 def test_determine_round_winners_all_in_one_winner():

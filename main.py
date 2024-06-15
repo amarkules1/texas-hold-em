@@ -1,5 +1,5 @@
-from src.texas_hold_em_utils.card import Card
-from src.texas_hold_em_utils.sklansky import sklansky_playable_position, sklansky_rank
+from texas_hold_em_utils import Card
+from texas_hold_em_utils.sklansky import sklansky_playable_position, sklansky_rank
 
 
 def main():

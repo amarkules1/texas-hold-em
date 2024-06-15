@@ -1,5 +1,5 @@
-from src.texas_hold_em_utils.card import Card
-from src.texas_hold_em_utils.hands import HandOfFive
+from texas_hold_em_utils.card import Card
+from texas_hold_em_utils.hands import HandOfFive
 
 
 def test_compare_hands_same_rank():

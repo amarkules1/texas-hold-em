@@ -1,4 +1,4 @@
-from src.texas_hold_em_utils.deck import Deck
+from texas_hold_em_utils.deck import Deck
 
 
 def test_new_draw():
