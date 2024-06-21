@@ -26,6 +26,12 @@ class Card:
     def name(self):
         return f"{self.ranks[self.rank]} of {self.suits[self.suit]}"
 
+    def from_name(self, name: str):
+        rank, suit = name.split(" of ")
+        self.rank = self.ranks.index(rank)
+        self.suit = self.suits.index(suit)
+        return self
+
     def is_higher_than(self, card):
         return self.rank > card.rank
 
