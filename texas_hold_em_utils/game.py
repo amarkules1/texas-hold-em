@@ -83,31 +83,34 @@ class Game:
     def get_bets(self):
         """
         Gets the bets from each player in the round, keeping track of the pot and the required bet to stay in the round
-        :return:
+        :return: the number of players still in the round
         """
+        is_first_bet = True
+        players_in_round = len([player for player in self.players if player.in_round])
         if self.round == 0:
             self.all_day = self.big_blind
             # small blind
             self.pot += self.players[(self.dealer_position + 1) % self.player_ct].bet(self.big_blind // 2)
             # big blind
             self.pot += self.players[(self.dealer_position + 2) % self.player_ct].bet(self.big_blind)
-            for i in range(3, self.player_ct + 3):
-                player = self.players[(self.dealer_position + i) % self.player_ct]
-                if player.in_round:
-                    decision = player.decide(self.round, self.pot, self.all_day, self.big_blind, self.community_cards)
-                    if decision[0] == "raise":
-                        # TODO - all other players must call or fold until last raiser is reached
-                        self.all_day = player.round_bet
-                    self.pot += decision[1]
+            last_bettor = self.dealer_position + 3 % self.player_ct  # player after big blind (hasn't really bet yet)
+            next_bettor = last_bettor
         else:
-            for i in range(self.player_ct):
-                player = self.players[(self.dealer_position + i) % self.player_ct]
-                if player.in_round:
-                    decision = player.decide(self.round, self.pot, self.all_day, self.big_blind, self.community_cards)
-                    if decision[0] == "raise":
-                        # TODO - all other players must call or fold until last raiser is reached
-                        self.all_day = player.round_bet
-                    self.pot += decision[1]
+            last_bettor = self.dealer_position + 1 % self.player_ct
+            next_bettor = last_bettor
+        while players_in_round > 1 and (is_first_bet or next_bettor % self.player_ct != last_bettor % self.player_ct):
+            is_first_bet = False
+            player = self.players[next_bettor % self.player_ct]
+            if player.in_round:
+                decision = player.decide(self.round, self.pot, self.all_day, self.big_blind, self.community_cards)
+                if decision[0] == "raise":
+                    self.all_day = player.round_bet
+                    last_bettor = next_bettor
+                elif decision[0] == "fold":
+                    players_in_round -= 1
+                self.pot += decision[1]
+            next_bettor += 1
+        return players_in_round
 
     def determine_round_winners(self):
         """

@@ -1,3 +1,5 @@
+from unittest.mock import MagicMock, Mock
+
 from texas_hold_em_utils.card import Card
 from texas_hold_em_utils.hands import HandOfTwo
 from texas_hold_em_utils.player import Player, SimplePlayer
@@ -165,7 +167,7 @@ def test_2_player_simple_pre_flop():
     assert game.all_day == 20
 
 
-def test_2_player_simple_through_flop():
+def test_2_player_simple_full():
     game = Game(2)
     game.players = [SimplePlayer(0), SimplePlayer(1)]
     game.deal()
@@ -208,4 +210,66 @@ def test_2_player_simple_through_flop():
     assert len(winners) > 0
 
 
+def test_3_player_simple_full():
+    game = Game(3)
+    game.players = [SimplePlayer(0), SimplePlayer(1), SimplePlayer(2)]
+    game.deal()
+    game.get_bets()
+
+    assert game.players[0].round_bet == 20
+    assert game.players[1].round_bet == 20
+    assert game.players[2].round_bet == 20
+    assert game.pot == 60
+    assert game.all_day == 20
+    assert game.round == 0
+
+    game.flop()
+    game.get_bets()
+
+    assert game.players[0].round_bet == 20
+    assert game.players[1].round_bet == 20
+    assert game.players[2].round_bet == 20
+    assert game.pot == 60
+    assert game.all_day == 20
+    assert game.round == 1
+
+    game.turn()
+    game.get_bets()
+
+    assert game.players[0].round_bet == 20
+    assert game.players[1].round_bet == 20
+    assert game.players[2].round_bet == 20
+    assert game.pot == 60
+    assert game.all_day == 20
+    assert game.round == 2
+
+    game.river()
+    game.get_bets()
+
+    assert game.players[0].round_bet == 20
+    assert game.players[1].round_bet == 20
+    assert game.players[2].round_bet == 20
+    assert game.pot == 60
+    assert game.all_day == 20
+    assert game.round == 3
+
+    winners = game.determine_round_winners()
+    assert len(winners) > 0
+
+
+def test_3_player_game_with_preflop_raise():
+    game = Game(3)
+    player_3 = SimplePlayer(0)
+    player_3.round_bet = 40
+    player_3.decide = Mock(return_value=("raise", 40))
+    game.players = [player_3, SimplePlayer(1), SimplePlayer(2)]
+    game.deal()
+    game.get_bets()
+
+    assert game.players[1].round_bet == 10
+    assert game.players[2].round_bet == 20
+    assert not game.players[1].in_round
+    assert not game.players[2].in_round
+    assert game.pot == 70
+    assert game.all_day == 40
 
