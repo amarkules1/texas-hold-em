@@ -5,12 +5,13 @@ class Card:
     rank: int = 0
     suit: int = 0
 
-    def __init__ (self):
+    def __init__(self):
         self.rank = 0
         self.suit = 0
 
     def from_ints(self, rank: int, suit: int):
         """
+        Set the rank and suit of the card from integers
         :param rank: 0 indexed ("2" = 0, "A" = 12) card rank
         :param suit: from 0-3: "Hearts", "Diamonds", "Clubs", "Spades"
         """
@@ -19,6 +20,12 @@ class Card:
         return self
 
     def from_str(self, rank: str, suit: str):
+        """
+        Set the rank and suit of the card from strings
+        :param rank: single character rank ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
+        :param suit: suit ["Hearts", "Diamonds", "Clubs", "Spades"]
+        :return:
+        """
         self.rank = self.ranks.index(rank)
         self.suit = self.suits.index(suit)
         return self
@@ -33,9 +40,19 @@ class Card:
         return self
 
     def is_higher_than(self, card):
+        """
+        Returns True if this card is higher than the card passed in, False otherwise.
+        :param card:
+        :return:
+        """
         return self.rank > card.rank
 
     def is_lower_than(self, card):
+        """
+        Returns True if this card is lower than the card passed in, False otherwise.
+        :param card:
+        :return:
+        """
         return self.rank < card.rank
 
     def is_same_suit(self, card):
@@ -48,4 +65,4 @@ class Card:
         return self.rank == other.rank and self.suit == other.suit
 
     def __str__(self):
-        return "{rank} of {suit}".format(rank=self.ranks[self.rank], suit=self.suits[self.suit])
+        return self.name()

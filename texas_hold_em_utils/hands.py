@@ -23,6 +23,11 @@ class HandOfTwo:
         self.cards = cards
 
     def add_card(self, card):
+        """
+        Adds a card to the hand if there are less than 2 cards
+        :param card:
+        :return:
+        """
         if len(self.cards) < 2:
             self.cards.append(card)
         else:
@@ -37,11 +42,24 @@ class HandOfFive:
     hand = []
 
     def __init__(self, hand_cards, community_cards):
+        """
+
+        :param hand_cards: list of 2 cards
+        :param community_cards: list of 5 cards
+        """
         self.hand_cards = hand_cards
         self.community_cards = community_cards
         self.determine_best(hand_cards, community_cards)
 
     def determine_best(self, hand_cards, community_cards):
+        """
+        Determines the best hand from the hand and community cards
+        :param hand_cards: list of 2 cards
+        :param community_cards: list of 5 cards
+        :return: the 5 cards that make up the best hand, ordered so that the hand is easily compared to other hands
+        Ex: a straight flush would be ordered from highest to lowest card, a full house would be ordered with the three
+        of a kind first, then the pair
+        """
         for i in range(len(HAND_FUNCTIONS)):
             self.hand = HAND_FUNCTIONS[i](hand_cards, community_cards)
             if self.hand is not None:
@@ -49,6 +67,11 @@ class HandOfFive:
                 break
 
     def __gt__(self, other):
+        """
+        Compares two hands to see if the first hand is better than the second
+        :param other: the other hand to compare to
+        :return: True if this hand is better than the other, False otherwise (including when they are equal)
+        """
         if self.hand_rank > other.hand_rank:
             return True
         elif self.hand_rank < other.hand_rank:
@@ -61,6 +84,11 @@ class HandOfFive:
         return False
 
     def __eq__(self, other):
+        """
+        Compares two hands to see if they are equal
+        :param other: the other hand to compare to
+        :return: True if the hands are equal, False otherwise
+        """
         if self.hand_rank == other.hand_rank:
             for i in range(5):
                 if self.hand[i].rank != other.hand[i].rank:
@@ -69,4 +97,9 @@ class HandOfFive:
         return False
 
     def __lt__(self, other):
+        """
+        Compares two hands to see if the first hand is worse than the second
+        :param other: the other hand to compare to
+        :return: True if this hand is worse than the other, False otherwise (including when they are equal)
+        """
         return not self.__gt__(other) and not self.__eq__(other)

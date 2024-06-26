@@ -1,4 +1,10 @@
 def sklansky_playable_position(position: int):
+    """
+    Returns the playable positions for a given Sklansky rank
+    https://en.wikipedia.org/wiki/Texas_hold_%27em_starting_hands#Sklansky_hand_groups
+    :param position: int from 1 to 9
+    :return: the positions and situations where the hand is playable
+    """
     if position < 5:
         return "Early, Middle, Late"
     if position == 5:
@@ -13,6 +19,13 @@ def sklansky_playable_position(position: int):
 
 
 def sklansky_rank(card1, card2):
+    """
+    Returns the Sklansky rank of the two hole cards passed in
+    https://en.wikipedia.org/wiki/Texas_hold_%27em_starting_hands#Sklansky_hand_groups
+    :param card1: a Card object
+    :param card2: a (different) Card object
+    :return: an int from 1 to 9, 1 being the best hand and 9 being the worst
+    """
     higher_card = card1 if card1.rank > card2.rank else card2
     lower_card = card1 if card1.rank < card2.rank else card2
     if is_rank_1(higher_card, lower_card):
