@@ -1,0 +1,9 @@
+- [ ] implement pot splitting
+- [ ] generate post-flop odds
+- [ ] generate post turn odds
+- [ ] generate post river odds
+- [ ] write some semi-intelligent players based on those odds
+- [ ] do this locally https://www.youtube.com/watch?v=cO5g5qLrLSo
+- [ ] adapt the tutorial to work for poker
+- [ ] playable game back end
+- 

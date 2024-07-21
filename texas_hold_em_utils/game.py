@@ -128,3 +128,27 @@ class Game:
                 elif player.hand_of_five == winners[0].hand_of_five:
                     winners.append(player)
         return winners
+
+    def pay_out_winners(self):
+        while self.pot > 0:
+            winners = self.determine_round_winners()
+            # find min bet of winners
+            min_bet = min([player.round_bet for player in winners])
+            payout = 0
+            for player in self.players:
+                contribution = min(player.round_bet, min_bet)
+                player.round_bet -= contribution
+                payout += contribution
+                if player.round_bet == 0:
+                    player.in_round = False
+            indiv_payout = payout // len(winners)
+            for winner in winners:
+                winner.chips += indiv_payout
+                self.pot -= indiv_payout
+                payout -= indiv_payout
+            i = 0
+            while payout > 0:
+                winners[i % len(winners)].chips += 1
+                payout -= 1
+                self.pot -= 1
+                i += 1
