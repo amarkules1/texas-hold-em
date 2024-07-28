@@ -13,6 +13,7 @@ psycopg2 = "*"
 hatch = "*"
 build = "*"
 twine = "*"
+pydoc-markdown = "*"
 
 [dev-packages]
 pytest = "*"
