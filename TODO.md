@@ -1,6 +1,6 @@
 - [x] implement pot splitting
-- [ ] way to pull in data from pre-flop odds database 
-- [ ] function to determine hand ranks based on community cards
+- [x] way to pull in data from pre-flop odds database 
+- [x] function to determine hand ranks based on community cards
   - Simple version that just checks every hand to calculate ranks
   - Version that samples hands for efficiency
 - [ ] write some semi-intelligent players based on those odds:

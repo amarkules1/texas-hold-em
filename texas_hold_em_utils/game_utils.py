@@ -5,7 +5,7 @@ def get_card_counts(hand, community_cards):
     """
     Returns a list of the counts of each rank in the hand and community cards
     :param hand: list of 2 cards
-    :param community_cards: list of 5 cards
+    :param community_cards: list of 3 to 5 cards
     :return: list of integers representing the counts of each rank 2 to Ace
     """
     rank_counts = [0] * 13
@@ -18,7 +18,7 @@ def get_suite_counts(hand, community_cards):
     """
     Returns a list of the counts of each suit in the hand and community cards
     :param hand: list of 2 cards
-    :param community_cards: list of 5 cards
+    :param community_cards: list of 3 to 5 cards
     :return: list of integers representing the counts of each suit Hearts, Diamonds, Clubs, Spades
     """
     suite_counts = [0] * 4
@@ -31,7 +31,7 @@ def find_royal_flush(hand, community_cards):
     """
     Finds a royal flush in the hand and community cards if it exists
     :param hand: list of 2 cards
-    :param community_cards: list of 5 cards
+    :param community_cards: list of 3 to 5 cards
     :return: list of the 5 cards (in order from highest to lowest) that make up the royal flush if it exists,
     None otherwise
     """
@@ -50,7 +50,7 @@ def find_straight_flush(hand, community_cards):
     """
     Finds a straight flush in the hand and community cards if it exists
     :param hand: list of 2 cards
-    :param community_cards: list of 5 cards
+    :param community_cards: list of 3 to 5 cards
     :return: list of the 5 cards (in order from highest to lowest) that make up the (best) straight flush if it exists,
     None otherwise
     """
@@ -72,7 +72,7 @@ def find_four_of_a_kind(hand, community_cards):
     """
     Finds a four of a kind in the hand and community cards if it exists
     :param hand: list of 2 cards
-    :param community_cards: list of 5 cards
+    :param community_cards: list of 3 to 5 cards
     :return: list of the 4 cards that make up the four of a kind and the highest card not in the four of a kind if it
     exists, None otherwise
     """
@@ -94,7 +94,7 @@ def find_full_house(hand, community_cards):
     """
     Finds a full house in the hand and community cards if it exists
     :param hand: list of 2 cards
-    :param community_cards: list of 5 cards
+    :param community_cards: list of 3 to 5 cards
     :return: list of the best full house if it exists (three of a kind first), None otherwise
     """
     card_counts = get_card_counts(hand, community_cards)
@@ -119,7 +119,7 @@ def find_flush(hand, community_cards):
     """
     Finds a flush in the hand and community cards if it exists
     :param hand: list of 2 cards
-    :param community_cards: list of 5 cards
+    :param community_cards: list of 3 to 5 cards
     :return: list of the 5 cards that make up the best possible flush if one exists, None otherwise
     """
     suite_counts = get_suite_counts(hand, community_cards)
@@ -139,7 +139,7 @@ def find_straight(hand, community_cards):
     """
     Finds a straight in the hand and community cards if it exists
     :param hand: list of 2 cards
-    :param community_cards: list of 5 cards
+    :param community_cards: list of 3 to 5 cards
     :return: list of the 5 cards that make up the best possible straight if one exists, None otherwise
     """
     card_counts = get_card_counts(hand, community_cards)
@@ -164,7 +164,7 @@ def find_three_of_a_kind(hand, community_cards):
     """
     Finds a three of a kind in the hand and community cards if it exists
     :param hand: list of 2 cards
-    :param community_cards: list of 5 cards
+    :param community_cards: list of 3 to 5 cards
     :return: a list of the three of a kind plus the 2 other highest cards if it exists, None otherwise
     """
     card_counts = get_card_counts(hand, community_cards)
@@ -183,7 +183,7 @@ def find_two_pair(hand, community_cards):
     """
     Finds two pair in the hand and community cards if it exists
     :param hand: list of 2 cards
-    :param community_cards: list of 5 cards
+    :param community_cards: list of 3 to 5 cards
     :return: a list of the 2 pairs (higher one first) and the highest card not in the two pairs if it exists, None
     otherwise
     """
@@ -208,7 +208,7 @@ def find_single_pair(hand, community_cards):
     """
     Finds a single pair in the hand and community cards if it exists
     :param hand: list of 2 cards
-    :param community_cards: list of 5 cards
+    :param community_cards: list of 3 to 5 cards
     :return: the pair and the 3 highest cards not in the pair if it exists, None otherwise
     """
     card_counts = get_card_counts(hand, community_cards)
@@ -227,7 +227,7 @@ def find_high_card(hand, community_cards):
     """
     Orders the hand and community cards by rank and returns the 5 highest cards
     :param hand: list of 2 cards
-    :param community_cards: list of 5 cards
+    :param community_cards: list of 3 to 5 cards
     :return: list of the 5 highest cards
     """
     sorted_cards = hand + community_cards
