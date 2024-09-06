@@ -102,7 +102,7 @@ class Game:
             is_first_bet = False
             player = self.players[next_bettor % self.player_ct]
             if player.in_round:
-                decision = player.decide(self.round, self.pot, self.all_day, self.big_blind, self.community_cards)
+                decision = player.decide(self.round, self.pot, self.all_day, self.big_blind, self.community_cards, players_in_round)
                 if decision[0] == "raise":
                     self.all_day = player.round_bet
                     last_bettor = next_bettor
