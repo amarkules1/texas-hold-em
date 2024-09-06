@@ -1,5 +1,6 @@
 from texas_hold_em_utils.hands import HandOfTwo
 from texas_hold_em_utils.preflop_stats_repository import PreflopStatsRepository
+from texas_hold_em_utils.relative_ranking import rank_hand
 
 
 class Player:
@@ -45,12 +46,12 @@ class Player:
     def decide(self, round_num, pot, all_day, big_blind, community_cards, player_ct):
         """
         Abstract method for deciding what to do in a round
-        :param player_ct: number of players in the game
         :param round_num: 0 for pre-flop, 1 for flop, 2 for turn, 3 for river
         :param pot: the current pot
         :param all_day: the current highest bet (including all rounds)
         :param big_blind: the big blind for the game
         :param community_cards: the community cards (list of 0 to 5 cards)
+        :param player_ct: number of players in the game
         :return: a tuple of the action ("fold", "check", "call", "raise") and the amount to bet
         """
         pass
@@ -61,12 +62,12 @@ class SimplePlayer(Player):
     def decide(self, round_num, pot, all_day, big_blind, community_cards, player_ct):
         """
         Simple player calls big blind, then checks, folds to any bet past BB
-        :param player_ct: number of players in the game
         :param round_num: 0 for pre-flop, 1 for flop, 2 for turn, 3 for river
         :param pot: the current pot
         :param all_day: the current highest bet (including all rounds)
         :param big_blind: the big blind for the game
         :param community_cards: the community cards (list of 0 to 5 cards)
+        :param player_ct: number of players in the game
         :return: a tuple of the action ("fold", "check", "call", "raise") and the amount to bet
         """
         to_call = all_day - self.round_bet
@@ -80,6 +81,7 @@ class SimplePlayer(Player):
 class AllInPreFlopPlayer(Player):
     threshold = 0.5
     preflop_stats_repo = None
+    in_check_fold = False
 
     def __init__(self, position, chips=1000, threshold=0.5):
         super().__init__(position, chips)
@@ -89,16 +91,20 @@ class AllInPreFlopPlayer(Player):
     def decide(self, round_num, pot, all_day, big_blind, community_cards, player_ct):
         """
         Goes all in preflop if win rate is above threshold, otherwise check/folds
-        :param player_ct: number of players in the game
         :param round_num: 0 for pre-flop, 1 for flop, 2 for turn, 3 for river
         :param pot: the current pot
         :param all_day: the current highest bet (including all rounds)
         :param big_blind: the big blind for the game
         :param community_cards: the community cards (list of 0 to 5 cards)
+        :param player_ct: number of players in the game
         :return: a tuple of the action ("fold", "check", "call", "raise") and the amount to bet
         """
-        # note - game expects that an all in player checks in subsequent betting rounds
+        to_call = all_day - self.round_bet
+        # if player is BB and
+        if self.in_check_fold and to_call > 0 and round_num > 0:
+            return "fold", self.fold()
         if round_num == 0:
+            self.in_check_fold = False
             win_rate = self.preflop_stats_repo.get_win_rate(
                 self.hand_of_two.cards[0].rank,
                 self.hand_of_two.cards[1].rank,
@@ -107,8 +113,58 @@ class AllInPreFlopPlayer(Player):
             if win_rate['win_rate'] > self.threshold:
                 return "raise", self.bet(self.chips)
             else:
-                to_call = all_day - self.round_bet
                 if to_call == 0:
+                    self.in_check_fold = True
                     return "check", 0
                 return "fold", self.fold()
+        # if player is BB and made it past the flop we need to check/fold
+        if self.in_check_fold and to_call > 0 and round_num > 0:
+            return "fold", self.fold()
         return "check", 0
+
+
+class LimpPlayer(Player):
+    threshold = 0.5
+    preflop_stats_repo = None
+    is_variable_threshold = False
+
+    def __init__(self, position, chips=1000, threshold=0.5):
+        super().__init__(position, chips)
+        self.threshold = threshold
+        self.preflop_stats_repo = PreflopStatsRepository()
+        if type(threshold) is list:
+            self.is_variable_threshold = True
+
+    def decide(self, round_num, pot, all_day, big_blind, community_cards, player_ct):
+        """
+        Calls if win rate is above threshold, otherwise check/folds
+        :param round_num: 0 for pre-flop, 1 for flop, 2 for turn, 3 for river
+        :param pot: the current pot
+        :param all_day: the current highest bet (including all rounds)
+        :param big_blind: the big blind for the game
+        :param community_cards: the community cards (list of 0 to 5 cards)
+        :param player_ct: number of players in the game
+        :return: a tuple of the action ("fold", "check", "call", "raise") and the amount to bet
+        """
+        to_call = all_day - self.round_bet
+        if to_call == 0 or self.chips == 0:
+            return "check", 0
+
+        rd_threshold = self.threshold if not self.is_variable_threshold else self.threshold[round_num]
+
+        if round_num == 0:
+            win_rate = self.preflop_stats_repo.get_win_rate(
+                self.hand_of_two.cards[0].rank,
+                self.hand_of_two.cards[1].rank,
+                self.hand_of_two.cards[0].suit == self.hand_of_two.cards[1].suit,
+                player_ct)
+            if win_rate['win_rate'] > rd_threshold:
+                return "call", self.bet(to_call)
+        else:
+            wins, losses, ties = rank_hand(self.hand_of_two.cards, community_cards)
+            total = (wins + losses + ties) * 2
+            rate = ((wins * 2) + ties) / total
+            if rate > rd_threshold:
+                return "call", self.bet(to_call)
+
+        return "fold", self.fold()

@@ -4,7 +4,7 @@
   - Simple version that just checks every hand to calculate ranks
   - Version that samples hands for efficiency
 - [ ] write some semi-intelligent players based on those odds:
-  - [ ] AllInPlayer - goes all in pre-flop above a certain threshold, otherwise check/folds.
+  - [x] AllInPlayer - goes all in pre-flop above a certain threshold, otherwise check/folds.
   Needs a copy of the pre-flop odds and a threshold parameter.
   - [ ] LimpPlayer - calls above a certain threshold (constant or based on point in game), otherwise check/folds. 
   Needs the same params as AllInPLayer.
