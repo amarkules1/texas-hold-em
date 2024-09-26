@@ -3,6 +3,12 @@ from texas_hold_em_utils.deck import Deck
 
 
 def rank_hand(hand, community_cards):
+    """
+    Ranks a hand of two cards and 3-5 five community cards relative to all other possible hands, based only on known cards
+    :param hand: a list of 2 cards (Card objects)
+    :param community_cards: a list of 3-5 cards (Card objects)
+    :return: a tuple of the number of wins, losses, and ties for the given hand
+    """
     player_hand = HandOfFive(hand, community_cards)
     deck1 = Deck()
     deck2 = Deck()

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "texas_hold_em_utils"
-version = "0.0.5"
+version = "0.0.6"
 authors = [
   { name="Alex Markules", email="amarlar2354@gmail.com" },
 ]
