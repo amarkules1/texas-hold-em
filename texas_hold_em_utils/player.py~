@@ -1,6 +1,6 @@
 from texas_hold_em_utils.hands import HandOfTwo
 from texas_hold_em_utils.preflop_stats_repository import PreflopStatsRepository
-from texas_hold_em_utils.relative_ranking import get_hand_rank_details
+from texas_hold_em_utils.relative_ranking import rank_hand, get_hand_rank_details
 
 
 class Player:
