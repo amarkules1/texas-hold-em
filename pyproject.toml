@@ -4,12 +4,12 @@ build-backend = "hatchling.build"
 
 [project]
 name = "texas_hold_em_utils"
-version = "0.1.0"
+version = "0.1.1"
 authors = [
   { name="Alex Markules", email="amarlar2354@gmail.com" },
 ]
 description = "A package containing the logic for a Texas Hold 'Em game, along with some related utilities."
-readme = "README.md"
+readme = "README_full_links.md"
 requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",
