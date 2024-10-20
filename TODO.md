@@ -12,6 +12,5 @@
   Bets according to those thresholds.
   - [ ] VariablePlayer - Takes as a parameter a function that returns a bet size based on the current game state.
     - Gonna want multiple functions to try out
-- [ ] do this locally https://www.youtube.com/watch?v=cO5g5qLrLSo
 - [ ] adapt the tutorial to work for poker
 - [ ] playable game back end

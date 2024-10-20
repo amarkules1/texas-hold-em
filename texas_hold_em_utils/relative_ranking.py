@@ -56,17 +56,17 @@ def get_hand_rank_details(hand, community_cards=None, player_count=2):
     if community_cards is not None and len(community_cards) == 3:
         expected_2_player_win_rate = rank_hand_post_flop(hand, community_cards)
         expected_win_rate = rank_hand_post_flop(hand, community_cards, n_other_players=(player_count - 1))
-        percentile = expected_percentile(expected_win_rate, 0.5, percentile_standard_deviations['flop'])
+        percentile = expected_percentile(expected_2_player_win_rate, 0.5, percentile_standard_deviations['flop'])
     # turn
     if community_cards is not None and len(community_cards) == 4:
         expected_2_player_win_rate = rank_hand_post_turn(hand, community_cards)
         expected_win_rate = rank_hand_post_turn(hand, community_cards, n_other_players=(player_count - 1))
-        percentile = expected_percentile(expected_win_rate, 0.5, percentile_standard_deviations['turn'])
+        percentile = expected_percentile(expected_2_player_win_rate, 0.5, percentile_standard_deviations['turn'])
     # river
     if community_cards is not None and len(community_cards) == 5:
         expected_2_player_win_rate = rank_hand_post_river(hand, community_cards)
         expected_win_rate = expected_2_player_win_rate ** (player_count - 1)
-        percentile = expected_percentile(expected_win_rate, 0.5, percentile_standard_deviations['river'])
+        percentile = expected_percentile(expected_2_player_win_rate, 0.5, percentile_standard_deviations['river'])
 
     return {
         "expected_win_rate": expected_win_rate,
