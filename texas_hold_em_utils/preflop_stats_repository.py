@@ -21,7 +21,7 @@ class PreflopStatsRepository:
             _ = load_dotenv(find_dotenv())
             self.conn = sqlalchemy.create_engine(os.getenv("DATABASE_CONN_STRING")).connect()
         else:
-            self.all_data = pd.read_csv(os.path.dirname(__file__) + "/data/win_rates.csv")
+            self.all_data = pd.read_csv(os.path.dirname(__file__) + "/data/preflop_win_rates.csv")
 
     def get_win_rate(self, card1_rank, card2_rank, suited, player_count):
         """
