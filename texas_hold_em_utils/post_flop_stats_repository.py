@@ -21,4 +21,4 @@ class PostflopStatsRepository:
         """
         count = self.all_data.query(f"player_ct == {player_count} and street == '{street}' and win_rate < {win_rate}").shape[0]
         total = self.all_data.query(f"player_ct == {player_count} and street == '{street}'").shape[0]
-        return count / total
+        return 100 * (count / total)
