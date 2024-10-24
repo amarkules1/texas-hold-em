@@ -1,10 +1,12 @@
 import copy
 from texas_hold_em_utils.deck import Deck
 from texas_hold_em_utils.hands import HandOfFive
+from texas_hold_em_utils.post_flop_stats_repository import PostflopStatsRepository
 from texas_hold_em_utils.preflop_stats_repository import PreflopStatsRepository
 from scipy.stats import norm
 
 preflop_stats_repository = PreflopStatsRepository()
+postflop_stats_repository = PostflopStatsRepository()
 
 # Source: https://github.com/amarkules1/texas-holdem-notebooks/blob/main/percentiles_from_win_rates.ipynb
 percentile_standard_deviations = {
@@ -55,18 +57,30 @@ def get_hand_rank_details(hand, community_cards=None, player_count=2):
     # flop 
     if community_cards is not None and len(community_cards) == 3:
         expected_2_player_win_rate = rank_hand_post_flop(hand, community_cards)
-        expected_win_rate = rank_hand_post_flop(hand, community_cards, n_other_players=(player_count - 1))
-        percentile = expected_percentile(expected_2_player_win_rate, 0.5, percentile_standard_deviations['flop'])
+
+        if player_count > 2:
+            expected_win_rate = rank_hand_post_flop(hand, community_cards, n_other_players=(player_count - 1))
+            percentile = postflop_stats_repository.get_percentile(expected_win_rate, player_count, 'flop')
+        else:
+            expected_win_rate = expected_2_player_win_rate
+            percentile = expected_percentile(expected_2_player_win_rate, 0.5, percentile_standard_deviations['flop'])
     # turn
     if community_cards is not None and len(community_cards) == 4:
         expected_2_player_win_rate = rank_hand_post_turn(hand, community_cards)
-        expected_win_rate = rank_hand_post_turn(hand, community_cards, n_other_players=(player_count - 1))
-        percentile = expected_percentile(expected_2_player_win_rate, 0.5, percentile_standard_deviations['turn'])
+        if player_count > 2:
+            expected_win_rate = rank_hand_post_turn(hand, community_cards, n_other_players=(player_count - 1))
+            percentile = postflop_stats_repository.get_percentile(expected_win_rate, player_count, 'turn')
+        else:
+            expected_win_rate = expected_2_player_win_rate
+            percentile = expected_percentile(expected_2_player_win_rate, 0.5, percentile_standard_deviations['turn'])
     # river
     if community_cards is not None and len(community_cards) == 5:
         expected_2_player_win_rate = rank_hand_post_river(hand, community_cards)
         expected_win_rate = expected_2_player_win_rate ** (player_count - 1)
-        percentile = expected_percentile(expected_2_player_win_rate, 0.5, percentile_standard_deviations['river'])
+        if player_count > 2:
+            percentile = postflop_stats_repository.get_percentile(expected_win_rate, player_count, 'river')
+        else:
+            percentile = expected_percentile(expected_2_player_win_rate, 0.5, percentile_standard_deviations['river'])
 
     return {
         "expected_win_rate": expected_win_rate,
