@@ -26,7 +26,8 @@ def get_hand_rank_details(hand, community_cards=None, player_count=2):
         {
         "expected_win_rate": float between 0 and 1, based on the player_count,
         "expected_2_player_win_rate": float between 0 and 1, assumes 2 players,
-        "percentile": float between 0 and 100, how the hand's win rate compares to possible hands for other players
+        "percentile": float between 0 and 100, how the hand's win rate compares to possible hands for other players,
+        "ideal_kelly_max": float between -1 and 1, how much of their stack the player should bet assuming all other players call
         }
     """
     expected_win_rate = 0.0
@@ -82,10 +83,13 @@ def get_hand_rank_details(hand, community_cards=None, player_count=2):
         else:
             percentile = expected_percentile(expected_2_player_win_rate, 0.5, percentile_standard_deviations['river'])
 
+    kelly_max = compute_kelly_max(expected_win_rate, player_count)
+
     return {
         "expected_win_rate": expected_win_rate,
         "expected_2_player_win_rate": expected_2_player_win_rate,
-        "percentile": percentile
+        "percentile": percentile,
+        "ideal_kelly_max": kelly_max
     }
 
 
@@ -243,3 +247,15 @@ def expected_percentile(win_rate, mean, std_dev):
     """
     z_score = (win_rate - mean) / std_dev
     return norm.cdf(z_score) * 100
+
+
+def compute_kelly_max(win_rate, player_count):
+    """
+    computes the kelly max for a given win rate and player count
+    :param win_rate: win rate as a proportion (0-1)
+    :param player_count: player count including bettor
+    :return: kelly max assuming all other players call and win rate is accurate (they won't and it's not)
+    """
+    p_loss = (1 - win_rate)
+    b = player_count - 1
+    return win_rate - (p_loss / b)
