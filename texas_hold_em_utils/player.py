@@ -167,3 +167,32 @@ class LimpPlayer(Player):
                 return "call", self.bet(to_call)
 
         return "fold", self.fold()
+
+
+class KellyMaxProportionPlayer(Player):
+    round_proportions = None
+
+    def __init__(self, position, chips=1000, round_proportions=None):
+        super().__init__(position, chips)
+        if round_proportions is None:
+            self.round_proportions = [1, 1, 1, 1]
+        else:
+            self.round_proportions = round_proportions
+        if len(self.round_proportions) != 4:
+            raise ValueError("round_proportions must be a list of length 4")
+
+    def decide(self, round_num, pot, all_day, big_blind, community_cards, player_ct):
+        stats = get_hand_rank_details(self.hand_of_two.cards, community_cards, player_ct)
+        desired_bet = self.chips * self.round_proportions[round_num] * stats['ideal_kelly_max']
+        to_call = all_day - self.round_bet
+        if desired_bet < 0.8 * all_day:
+            if to_call > 0:
+                return "fold", self.fold()
+            else:
+                return "check", 0
+        elif desired_bet > 1.2 * all_day:
+            return "raise", self.bet(desired_bet - all_day)
+        else:
+            if to_call == 0:
+                return "check", 0
+            return "call", self.bet(to_call)
