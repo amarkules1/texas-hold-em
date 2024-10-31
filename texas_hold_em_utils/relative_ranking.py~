@@ -22,7 +22,6 @@ def get_hand_rank_details(hand, community_cards=None, player_count=2, sample_siz
     :param hand: array of 2 cards
     :param community_cards: array of 3-5 cards or None for pre-flop (default None)
     :param player_count: number of players in the game (default 2)
-    :param sample_size: number of simulation runs for sample based win rates (post-flop and post-river (default 1000)
     :return: a dict of:
         {
         "expected_win_rate": float between 0 and 1, based on the player_count,
