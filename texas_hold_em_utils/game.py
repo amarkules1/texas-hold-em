@@ -152,3 +152,18 @@ class Game:
                 payout -= 1
                 self.pot -= 1
                 i += 1
+
+    def run_round(self):
+        self.deck.shuffle()
+        self.deal()
+        active_players = self.get_bets()
+        if active_players > 1:
+            self.flop()
+            active_players = self.get_bets()
+        if active_players > 1:
+            self.turn()
+            active_players = self.get_bets()
+        if active_players > 1:
+            self.river()
+            self.get_bets()
+        self.pay_out_winners()
