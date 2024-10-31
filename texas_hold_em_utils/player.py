@@ -182,16 +182,28 @@ class KellyMaxProportionPlayer(Player):
             raise ValueError("round_proportions must be a list of length 4")
 
     def decide(self, round_num, pot, all_day, big_blind, community_cards, player_ct):
+        """
+        decides whether to check/fold/call/raise based on the kelly criterion and round proportion
+        bet size is rounded to the nearest multiple of the big blind
+        :param round_num: 0 for pre-flop, 1 for flop, 2 for turn, 3 for river
+        :param pot: the current pot
+        :param all_day: the current highest bet (including all rounds)
+        :param big_blind: the big blind for the game
+        :param community_cards: the community cards (list of 0 to 5 cards)
+        :param player_ct: number of players in the game
+        :return: a tuple of the action ("fold", "check", "call", "raise") and the amount to bet
+        """
         stats = get_hand_rank_details(self.hand_of_two.cards, community_cards, player_ct)
         desired_bet = self.chips * self.round_proportions[round_num] * stats['ideal_kelly_max']
         to_call = all_day - self.round_bet
-        if desired_bet < 0.8 * all_day:
+        desired_bet_nearest_multiple = round(desired_bet / big_blind) * big_blind
+        if desired_bet_nearest_multiple < all_day:
             if to_call > 0:
                 return "fold", self.fold()
             else:
                 return "check", 0
-        elif desired_bet > 1.2 * all_day:
-            return "raise", self.bet(desired_bet - all_day)
+        elif desired_bet_nearest_multiple > all_day:
+            return "raise", self.bet(desired_bet_nearest_multiple - all_day)
         else:
             if to_call == 0:
                 return "check", 0

@@ -154,6 +154,11 @@ class Game:
                 i += 1
 
     def run_round(self):
+        """
+        Runs a round of Texas Hold 'Em
+        Players must be set up before running the round, rest is handled here, from dealing to payout
+        :return:
+        """
         self.deck.shuffle()
         self.deal()
         active_players = self.get_bets()
