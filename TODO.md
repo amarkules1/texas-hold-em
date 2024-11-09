@@ -8,9 +8,7 @@
   Needs a copy of the pre-flop odds and a threshold parameter.
   - [x] LimpPlayer - calls above a certain threshold (constant or based on point in game), otherwise check/folds. 
   Needs the same params as AllInPLayer.
-  - [ ] DiscreteBetPlayer - Takes as a parameter multiple thresholds for different bet sizes and points in the game.
-  Bets according to those thresholds.
-  - [ ] VariablePlayer - Takes as a parameter a function that returns a bet size based on the current game state.
-    - Gonna want multiple functions to try out
-- [ ] adapt the tutorial to work for poker
-- [ ] playable game back end
+  - [x] KellyMaxProportionPlayer - makes betting decisions based on the kelly criterion and round proportion
+  - [ ] UserInputPlayer - allows for decisions based on user input (requires adjustments to game object)
+- [ ] write gym environment for the game
+- [ ] train a NN to play the game

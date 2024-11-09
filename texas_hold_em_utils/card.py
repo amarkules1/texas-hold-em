@@ -58,6 +58,18 @@ class Card:
     def is_same_suit(self, card):
         return self.suit == card.suit
 
+    def get_rank_str(self):
+        """
+        :return: the rank of the card as a string (2-10, J, Q, K, A)
+        """
+        return self.ranks[self.rank]
+
+    def get_suit_str(self):
+        """
+        :return: the suit of the card as a string
+        """
+        return self.suits[self.suit]
+
     def __gt__(self, other):
         return self.rank > other.rank
 
