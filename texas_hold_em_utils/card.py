@@ -22,12 +22,18 @@ class Card:
     def from_str(self, rank: str, suit: str):
         """
         Set the rank and suit of the card from strings
-        :param rank: single character rank ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
-        :param suit: suit ["Hearts", "Diamonds", "Clubs", "Spades"]
-        :return:
+        :param rank: single character rank ["2", "3", "4", "5", "6", "7", "8", "9", "10"/"T", "J", "Q", "K", "A"]
+        :param suit: suit ["Hearts", "Diamonds", "Clubs", "Spades"] (first letter of suit also works)
+        :return: self
         """
+        if len(suit) > 1:
+            self.suit = self.suits.index(suit)
+        else:
+            suit = suit.upper()
+            next(i for i,v in enumerate(self.suits) if v.startswith(suit))
+
+        rank = rank if rank != "T" else "10"
         self.rank = self.ranks.index(rank)
-        self.suit = self.suits.index(suit)
         return self
 
     def name(self):
