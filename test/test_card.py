@@ -31,3 +31,17 @@ def test_different_suit():
     card2 = Card().from_ints(0, 1)
     assert not card1.is_same_suit(card2)
 
+
+def test_from_str():
+    actual = Card().from_str("2", 's')
+
+    assert actual.rank == 0
+    assert actual.suit == 3
+
+
+def test_from_str_ten():
+    actual = Card().from_str("T", 'd')
+
+    assert actual.rank == 8
+    assert actual.suit == 1
+

@@ -30,7 +30,7 @@ class Card:
             self.suit = self.suits.index(suit)
         else:
             suit = suit.upper()
-            next(i for i,v in enumerate(self.suits) if v.startswith(suit))
+            self.suit = next(i for i, v in enumerate(self.suits) if v.startswith(suit))
 
         rank = rank if rank != "T" else "10"
         self.rank = self.ranks.index(rank)
