@@ -16,6 +16,9 @@ HAND_FUNCTIONS = [
     find_high_card
 ]
 
+HAND_TYPE_NAMES = ["High Card", "Pair", "Two Pair", "Three of a Kind", "Straight", "Flush", "Full House", "Four of a Kind",
+                   "Straight Flush", "Royal Flush"]
+
 
 class HandOfTwo:
 
@@ -65,6 +68,12 @@ class HandOfFive:
             if self.hand is not None:
                 self.hand_rank = 9 - i
                 break
+
+    def get_hand_rank_name(self):
+        return HAND_TYPE_NAMES[self.hand_rank]
+
+    def get_full_hand_rank(self):
+        return f"{HAND_TYPE_NAMES[self.hand_rank]} [{','.join([card.name() for card in self.hand])}]"
 
     def __gt__(self, other):
         """

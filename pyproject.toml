@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "texas_hold_em_utils"
-version = "0.1.12"
+version = "0.1.13"
 authors = [
   { name="Alex Markules", email="amarlar2354@gmail.com" },
 ]
@@ -13,9 +13,10 @@ readme = "README_full_links.md"
 requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
 
 [project.urls]
 Homepage = "https://github.com/amarkules1/texas-hold-em"
