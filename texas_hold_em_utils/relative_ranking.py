@@ -262,3 +262,71 @@ def compute_kelly_max(win_rate, player_count):
     p_loss = (1 - win_rate)
     b = player_count - 1
     return win_rate - (p_loss / b)
+
+
+def compare_hands(hands, community_cards=None, sample_size=1000):
+    """
+    computes win percentages for each hand of cards in hands
+    :param hands: list containing 2-12 lists of exactly two Card() objects each
+    :param community_cards: if provided, a list of 3-5 Card() objects representing the community cards (flop/turn/river)
+    :param sample_size: number of random samples to take to determine win rates (default 1000)
+    :return: an array of floats between 0 and 1, representing the win rates for each hand in order
+    """
+    # validate
+    if len(hands) < 2 or len(hands) > 12:
+        raise ValueError("Please provide a number of hands between 2 and 12")
+    for i in range(len(hands)):
+        if len(hands[i]) != 2:
+            raise ValueError(f"Hand at index {i} must have exactly 2 cards")
+    if community_cards and (len(community_cards) < 3 or len(community_cards) > 5):
+        raise ValueError(f"Community cards must be None or a list of 3-5 cards, found {len(community_cards)}")
+
+    # if there are 5 community cards there's no need to take a sample. outcome is always the same
+    if not community_cards:
+        community_cards = []
+
+    if len(community_cards) == 5:
+        winner_indices = []
+        winner = None
+        for i in range(len(hands)):
+            if len(winner_indices) == 0:
+                winner_indices = winner_indices + [i]
+                winner = HandOfFive(hands[i], community_cards)
+            else:
+                hand_of_five = HandOfFive(hands[i], community_cards)
+                if hand_of_five > winner:
+                    winner_indices = [i]
+                    winner = hand_of_five
+                elif hand_of_five == winner:
+                    winner_indices = winner_indices + [i]
+        return [1.0 if i in winner_indices else 0.0 for i in range(len(hands))]
+
+    wins = [0] * len(hands)
+    deck = Deck()
+    for hand in hands:
+        deck.remove(hand[0])
+        deck.remove(hand[1])
+    for i in range(sample_size):
+        sample_deck = copy.deepcopy(deck)
+        sample_deck.shuffle()
+        community_cards_copy = community_cards.copy()
+        while len(community_cards_copy) < 5:
+            community_cards_copy.append(sample_deck.draw())
+        winner_indices = []
+        winner = None
+        for i in range(len(hands)):
+            if len(winner_indices) == 0:
+                winner_indices = winner_indices + [i]
+                winner = HandOfFive(hands[i], community_cards_copy)
+            else:
+                hand_of_five = HandOfFive(hands[i], community_cards_copy)
+                if hand_of_five > winner:
+                    winner_indices = [i]
+                    winner = hand_of_five
+                elif hand_of_five == winner:
+                    winner_indices = winner_indices + [i]
+        for i in winner_indices:
+            wins[i] += (1.0 / len(winner_indices))
+
+    win_rates = [win / sample_size for win in wins]
+    return win_rates
