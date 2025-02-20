@@ -176,6 +176,33 @@ def test_compare_hands_heads_up():
     assert win_rates[0] > win_rates[1]
 
 
+def test_compare_hands_post_flop():
+    hand_1 = [Card().from_str("A", "Hearts"), Card().from_str("A", "Clubs")]
+    hand_2 = [Card().from_str("2", "Spades"), Card().from_str("7", "Hearts")]
+    community_cards = [Card().from_str("4", "Clubs"), Card().from_str("6", "Diamonds"),
+                       Card().from_str("9", "Hearts")]
+
+    win_rates = compare_hands([hand_1, hand_2], community_cards, sample_size=1000)
+
+    assert len(win_rates) == 2
+    assert win_rates[0] > win_rates[1]
+
+
+def test_compare_hands_post_river():
+    hand_1 = [Card().from_str("A", "Hearts"), Card().from_str("A", "Clubs")]
+    hand_2 = [Card().from_str("2", "Spades"), Card().from_str("7", "Hearts")]
+    community_cards = [Card().from_str("4", "Clubs"), Card().from_str("6", "Diamonds"),
+                       Card().from_str("9", "Hearts"), Card().from_str("9", "Spades"),
+                       Card().from_str("9", "Clubs")]
+
+    win_rates = compare_hands([hand_1, hand_2], community_cards, sample_size=1000)
+
+    assert len(win_rates) == 2
+    assert win_rates[0] > win_rates[1]
+    assert win_rates[0] == 1.0
+    assert win_rates[1] == 0.0
+
+
 def test_compare_hands_three_ways():
     hand_1 = [Card().from_str("A", "Hearts"), Card().from_str("A", "Clubs")]
     hand_2 = [Card().from_str("2", "Spades"), Card().from_str("7", "Hearts")]
