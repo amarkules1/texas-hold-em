@@ -9,10 +9,9 @@ export class PostflopStatsRepository {
     private readonly validStreets = ['flop', 'turn', 'river'];
 
     constructor() {
-        const dataPath = path.resolve(__dirname, 'data', 'post_flop_win_rate_distribution.csv');
-            const csvContent = readFileSync(dataPath, 'utf-8');
-            this.percentileData = dataForge.fromCSV(csvContent);
-            this.percentileData = this.percentileData.parseFloats(['win_rate']);
+        const dataPath = path.resolve(__dirname, 'data', 'post_flop_win_rate_distribution.json');
+        const jsonContent = readFileSync(dataPath, 'utf-8');
+        this.percentileData = dataForge.fromJSON(jsonContent);
     }
 
     /**
@@ -37,28 +36,14 @@ export class PostflopStatsRepository {
         }
 
         // Find rows matching player count and street, with win_rate <= input winRate
-        const rowsBelowOrEqual = this.percentileData
-            .where(row => 
-                row.player_count === playerCount && 
-                row.street === lowerCaseStreet && 
-                (row.win_rate <= winRate || Math.abs(row.win_rate - winRate) < EPSILON) // Check within epsilon
+        const rowsForPlayerCtAndStreet = this.percentileData
+            .filter(row => 
+                row.player_ct === playerCount && 
+                row.street === lowerCaseStreet
             )
-            .orderByDescending(row => row.win_rate); // Order to get the max easily
+        const total = rowsForPlayerCtAndStreet.toArray().length;
+        const below = rowsForPlayerCtAndStreet.filter(row => row.win_rate < winRate).toArray().length;
 
-        const resultRow = rowsBelowOrEqual.first(); // Get the row with the highest win_rate <= input
-
-        if (!resultRow) {
-            // Log specifically for the problematic test case if needed
-            if (playerCount === 3 && street === 'flop') {
-                 console.log(`[Postflop Debug] No row found for winRate <= ${winRate}, pc=3, street=flop`);
-            }
-            return 0.0; // If no win rate is <= input, return 0 percentile
-        }
-
-        // Log specifically for the problematic test case if needed
-        if (playerCount === 3 && street === 'flop') {
-            console.log(`[Postflop Debug] Found matching row for pc=3, street=flop:`, resultRow);
-        }
-        return resultRow.percentile;
+        return 100 * (below / total);
     }
 }

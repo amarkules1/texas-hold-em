@@ -6,19 +6,9 @@ export class PreflopStatsRepository {
     private winRates: dataForge.IDataFrame<number, any>;
 
     constructor() {
-        const dataPath = path.resolve(__dirname, 'data', 'preflop_win_rates.csv');
-        try {
-            const csvContent = readFileSync(dataPath, 'utf-8');
-            this.winRates = dataForge.fromCSV(csvContent)
-                .parseInts(['card1_rank', 'card2_rank', 'player_count'])
-                .parseFloats(['win_rate', 'percentile'])
-                .transformSeries({ 
-                    suited: (value: any): boolean => String(value).toLowerCase() === 'true' || value === '1' || value === 1 || value === true
-                });
-        } catch (err) {
-            console.error(`[Preflop] Error loading or parsing CSV at ${dataPath}:`, err); 
-            throw new Error(`Failed to load preflop stats from ${dataPath}`);
-        }
+        const dataPath = path.resolve(__dirname, 'data', 'preflop_win_rates.json');
+        const jsonContent = readFileSync(dataPath, 'utf-8');
+        this.winRates = dataForge.fromJSON(jsonContent);
     }
 
     /**
@@ -46,8 +36,8 @@ export class PreflopStatsRepository {
         }
 
         const result = this.winRates.where(row => 
-            row.card1_rank === card1Rank &&
-            row.card2_rank === card2Rank &&
+            row.card_1_rank === card1Rank &&
+            row.card_2_rank === card2Rank &&
             row.suited === suited &&
             row.player_count === playerCount
         ).first(); // Get the first matching row
