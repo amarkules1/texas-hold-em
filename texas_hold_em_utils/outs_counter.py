@@ -1,3 +1,4 @@
+from texas_hold_em_utils import card
 from texas_hold_em_utils.deck import Deck
 from texas_hold_em_utils.hands import HandOfFive
 
@@ -91,5 +92,22 @@ class OutsMetrics:
             self.win_percentages = [len(out) / self.remaining_card_combinations for out in self.outs]
         elif len(community_cards) == 3:
             self.remaining_card_combinations = len(remaining_deck.cards) * (len(remaining_deck.cards) - 1)
+            self.outs = get_two_card_outs(self.hands, self.community_cards)
+            self.win_percentages = [len(out) / self.remaining_card_combinations for out in self.outs]
         else:
             raise ValueError(f"Invalid number of community cards {len(community_cards)}")
+
+    def to_json(self):
+        return {
+            "hands": [[str(card) for card in hand] for hand in self.hands],
+            "community_cards": [str(card) for card in self.community_cards],
+            "outs": [
+            [
+                str(card) if not isinstance(card, tuple)
+                else ",".join(str(c) for c in card)
+                for card in out_list
+            ]
+            for out_list in self.outs
+        ],
+            "win_percentages": self.win_percentages
+        }

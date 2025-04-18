@@ -112,3 +112,4 @@ class HandOfFive:
         :return: True if this hand is worse than the other, False otherwise (including when they are equal)
         """
         return not self.__gt__(other) and not self.__eq__(other)
+    
