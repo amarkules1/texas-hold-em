@@ -126,7 +126,7 @@ class OutsMetrics:
             self.outs = get_one_card_outs(self.hands, self.community_cards)
             self.win_percentages = [len(out) / self.remaining_card_combinations for out in self.outs]
         elif len(community_cards) == 3:
-            self.remaining_card_combinations = len(remaining_deck.cards) * (len(remaining_deck.cards) - 1)
+            self.remaining_card_combinations = len(remaining_deck.cards) * (len(remaining_deck.cards) - 1) / 2 # divide by 2 because order doesn't matter
             self.outs = get_two_card_outs(self.hands, self.community_cards)
             self.win_percentages = [len(out) / self.remaining_card_combinations for out in self.outs]
         else:
